@@ -2,10 +2,13 @@ provider "aws" {
   region = var.region
 }
 module "s3_buckets" {
-  source  = "clouddrove/s3/aws"
+  source  = "terraform-aws-modules/s3-bucket/aws"
   for_each = toset(var.bucket_names)
   name       = each.value
-  versioning = true
+  versioning = {
+    status     = true
+    mfa_delete = false
+  }
 }
 resource "aws_s3_bucket_policy" "s3_bucket_policy" {
   for_each = module.s3_buckets
